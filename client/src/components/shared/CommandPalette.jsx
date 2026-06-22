@@ -1,0 +1,117 @@
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Search, Home, User, Briefcase, BookOpen, Mail, ExternalLink } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+
+const commands = [
+  { id: 'home',     label: 'Home',          icon: Home,        action: 'scroll', target: '#hero' },
+  { id: 'about',    label: 'About',         icon: User,        action: 'scroll', target: '#about' },
+  { id: 'projects', label: 'Projects',      icon: Briefcase,   action: 'scroll', target: '#projects' },
+  { id: 'blog',     label: 'Blog',          icon: BookOpen,    action: 'route',  target: '/blog' },
+  { id: 'contact',  label: 'Contact',       icon: Mail,        action: 'scroll', target: '#contact' },
+  { id: 'github',   label: 'GitHub →',      icon: ExternalLink, action: 'link', target: 'https://github.com/danishrazabangash' },
+  { id: 'linkedin', label: 'LinkedIn →',    icon: ExternalLink, action: 'link', target: 'https://linkedin.com/in/danish-raza-bangash' },
+]
+
+export default function CommandPalette() {
+  const [open, setOpen] = useState(false)
+  const [query, setQuery] = useState('')
+  const [selected, setSelected] = useState(0)
+  const navigate = useNavigate()
+
+  const filtered = query
+    ? commands.filter((c) => c.label.toLowerCase().includes(query.toLowerCase()))
+    : commands
+
+  useEffect(() => {
+    const down = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault()
+        setOpen((o) => !o)
+      }
+      if (e.key === 'Escape') setOpen(false)
+    }
+    window.addEventListener('keydown', down)
+    return () => window.removeEventListener('keydown', down)
+  }, [])
+
+  useEffect(() => { setSelected(0) }, [query])
+
+  const run = (cmd) => {
+    setOpen(false)
+    setQuery('')
+    if (cmd.action === 'scroll') {
+      document.querySelector(cmd.target)?.scrollIntoView({ behavior: 'smooth' })
+    } else if (cmd.action === 'route') {
+      navigate(cmd.target)
+    } else if (cmd.action === 'link') {
+      window.open(cmd.target, '_blank')
+    }
+  }
+
+  const onKey = (e) => {
+    if (e.key === 'ArrowDown') { e.preventDefault(); setSelected((s) => Math.min(s + 1, filtered.length - 1)) }
+    if (e.key === 'ArrowUp')   { e.preventDefault(); setSelected((s) => Math.max(s - 1, 0)) }
+    if (e.key === 'Enter' && filtered[selected]) run(filtered[selected])
+  }
+
+  return (
+    <>
+      <AnimatePresence>
+        {open && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[500]"
+              onClick={() => setOpen(false)}
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96, y: -8 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.96, y: -8 }}
+              transition={{ duration: 0.15 }}
+              className="fixed top-[20%] left-1/2 -translate-x-1/2 w-full max-w-lg z-[501] px-4"
+            >
+              <div className="glass rounded-2xl overflow-hidden shadow-2xl shadow-black/50">
+                <div className="flex items-center gap-3 px-4 py-3 border-b border-white/08">
+                  <Search size={16} className="text-white/40 shrink-0" />
+                  <input
+                    autoFocus
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    onKeyDown={onKey}
+                    placeholder="Search or jump to..."
+                    className="flex-1 bg-transparent text-sm text-white placeholder-white/30 outline-none"
+                  />
+                  <kbd className="text-[10px] text-white/30 border border-white/10 rounded px-1.5 py-0.5">ESC</kbd>
+                </div>
+                <div className="py-2 max-h-72 overflow-y-auto no-scrollbar">
+                  {filtered.length === 0 && (
+                    <p className="text-center text-white/30 text-sm py-6">No results</p>
+                  )}
+                  {filtered.map((cmd, i) => (
+                    <button
+                      key={cmd.id}
+                      onClick={() => run(cmd)}
+                      className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm text-left transition-colors ${
+                        i === selected ? 'bg-white/08 text-white' : 'text-white/60 hover:bg-white/04 hover:text-white'
+                      }`}
+                    >
+                      <cmd.icon size={15} className="shrink-0" />
+                      {cmd.label}
+                    </button>
+                  ))}
+                </div>
+                <div className="px-4 py-2 border-t border-white/08 flex gap-3 text-[10px] text-white/25">
+                  <span><kbd className="border border-white/10 rounded px-1">↑↓</kbd> navigate</span>
+                  <span><kbd className="border border-white/10 rounded px-1">↵</kbd> open</span>
+                  <span><kbd className="border border-white/10 rounded px-1">Ctrl K</kbd> toggle</span>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+    </>
+  )
+}

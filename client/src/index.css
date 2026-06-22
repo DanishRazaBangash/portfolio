@@ -1,0 +1,260 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #030303;
+  --color-surface: #0a0a0a;
+  --color-surface-2: #111111;
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-border-hover: rgba(255, 255, 255, 0.16);
+  --color-text: #fafafa;
+  --color-muted: #737373;
+  --color-subtle: #404040;
+  --color-glass: rgba(255, 255, 255, 0.04);
+  --color-glass-hover: rgba(255, 255, 255, 0.07);
+
+  --font-sans: 'Inter', system-ui, sans-serif;
+
+  --radius-sm: 0.375rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-2xl: 2rem;
+}
+
+/* ── CSS variables consumed by inline styles & canvas ── */
+:root {
+  --navbar-glass:  rgba(0, 0, 0, 0.04);
+  --navbar-border: rgba(0, 0, 0, 0.08);
+  --hero-glow:     rgba(0, 0, 0, 0.04);
+  --particle-rgb:  0, 0, 0;
+  --sparkle-fill:  #000000;
+  --progress-bar:  rgba(9, 9, 11, 0.80);
+  --bg-base:       #e8e8ec;
+}
+
+.dark {
+  --navbar-glass:  rgba(255, 255, 255, 0.04);
+  --navbar-border: rgba(255, 255, 255, 0.08);
+  --hero-glow:     rgba(255, 255, 255, 0.04);
+  --particle-rgb:  255, 255, 255;
+  --sparkle-fill:  #ffffff;
+  --progress-bar:  rgba(255, 255, 255, 0.70);
+  --bg-base:       #030303;
+}
+
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; font-size: 85%; }
+
+  body {
+    background-color: var(--bg-base);
+    color: #09090b;
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  html:not(.dark) { color-scheme: light; }
+
+  .dark body {
+    color: #fafafa;
+    color-scheme: dark;
+  }
+
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg-base); }
+  ::-webkit-scrollbar-thumb { background: rgba(128,128,128,0.28); border-radius: 2px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(128,128,128,0.48); }
+  .dark ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); }
+  .dark ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.25); }
+
+  ::selection { background: rgba(0,0,0,0.12);  color: #09090b; }
+  .dark ::selection { background: rgba(255,255,255,0.15); color: #fff; }
+}
+
+@layer utilities {
+  /* ── glass ── */
+  .glass {
+    background: rgba(255, 255, 255, 0.74);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  .dark .glass {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+  .glass-hover:hover {
+    background: rgba(255, 255, 255, 0.90);
+    border-color: rgba(0, 0, 0, 0.14);
+  }
+  .dark .glass-hover:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.14);
+  }
+
+  /* ── text gradient ── */
+  .text-gradient {
+    background: linear-gradient(135deg, #09090b 0%, #52525b 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .dark .text-gradient {
+    background: linear-gradient(135deg, #ffffff 0%, #a3a3a3 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ── glow ── */
+  .glow-sm { box-shadow: 0 0 12px rgba(0,0,0,0.06); }
+  .glow-md { box-shadow: 0 0 24px rgba(0,0,0,0.09), 0 0 60px rgba(0,0,0,0.04); }
+  .dark .glow-sm { box-shadow: 0 0 12px rgba(255,255,255,0.07); }
+  .dark .glow-md { box-shadow: 0 0 24px rgba(255,255,255,0.10), 0 0 60px rgba(255,255,255,0.04); }
+
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   LIGHT MODE  —  override Tailwind white-colour utilities.
+
+   Selector html:not(.dark) contributes [0,1,1] extra specificity,
+   making each rule [0,2,1] vs Tailwind's [0,1,0] — wins cleanly.
+   No !important required.
+   ════════════════════════════════════════════════════════════════ */
+
+/* text-white + opacity variants
+   Opacities are boosted significantly vs the raw dark-mode values because
+   rgba(9,9,11,0.30) on #f5f5f7 is only ~2.2:1 contrast — unreadable.
+   Targeting WCAG AA (4.5:1) for anything ≥ /50, and visibly clear for lower. */
+html:not(.dark) .text-white     { color: #09090b; }
+html:not(.dark) .text-white\/90 { color: rgba(9,9,11,.90); }
+html:not(.dark) .text-white\/85 { color: rgba(9,9,11,.88); }
+html:not(.dark) .text-white\/80 { color: rgba(9,9,11,.82); }
+html:not(.dark) .text-white\/70 { color: rgba(9,9,11,.78); }
+html:not(.dark) .text-white\/65 { color: rgba(9,9,11,.76); }
+html:not(.dark) .text-white\/60 { color: rgba(9,9,11,.74); }
+html:not(.dark) .text-white\/55 { color: rgba(9,9,11,.72); }
+html:not(.dark) .text-white\/50 { color: rgba(9,9,11,.70); }
+html:not(.dark) .text-white\/45 { color: rgba(9,9,11,.67); }
+html:not(.dark) .text-white\/40 { color: rgba(9,9,11,.64); }
+html:not(.dark) .text-white\/35 { color: rgba(9,9,11,.62); }
+html:not(.dark) .text-white\/30 { color: rgba(9,9,11,.60); }
+html:not(.dark) .text-white\/25 { color: rgba(9,9,11,.56); }
+html:not(.dark) .text-white\/20 { color: rgba(9,9,11,.50); }
+html:not(.dark) .text-white\/15 { color: rgba(9,9,11,.42); }
+html:not(.dark) .text-white\/10 { color: rgba(9,9,11,.34); }
+html:not(.dark) .text-white\/08 { color: rgba(9,9,11,.28); }
+
+/* hover:text-white */
+html:not(.dark) .hover\:text-white:hover     { color: #09090b; }
+html:not(.dark) .hover\:text-white\/70:hover { color: rgba(9,9,11,.78); }
+html:not(.dark) .hover\:text-white\/90:hover { color: rgba(9,9,11,.90); }
+
+/* bg-white (pure) — buttons become dark-on-light */
+html:not(.dark) button.bg-white,
+html:not(.dark) a.bg-white {
+  background-color: #09090b;
+  color: #f5f5f7;
+}
+html:not(.dark) button.bg-white:hover,
+html:not(.dark) a.bg-white:hover {
+  background-color: rgba(9,9,11,.88);
+  color: #f5f5f7;
+}
+/* bg-white on non-interactive elements (progress bar fills, badge spans, etc.) */
+html:not(.dark) :not(button):not(a).bg-white {
+  background-color: #09090b;
+  color: #f5f5f7;
+}
+
+/* bg-white opacity variants */
+html:not(.dark) .bg-white\/03 { background-color: rgba(0,0,0,.025); }
+html:not(.dark) .bg-white\/04 { background-color: rgba(0,0,0,.030); }
+html:not(.dark) .bg-white\/05 { background-color: rgba(0,0,0,.040); }
+html:not(.dark) .bg-white\/06 { background-color: rgba(0,0,0,.050); }
+html:not(.dark) .bg-white\/07 { background-color: rgba(0,0,0,.055); }
+html:not(.dark) .bg-white\/08 { background-color: rgba(0,0,0,.060); }
+html:not(.dark) .bg-white\/10 { background-color: rgba(0,0,0,.070); }
+html:not(.dark) .bg-white\/12 { background-color: rgba(0,0,0,.080); }
+html:not(.dark) .bg-white\/15 { background-color: rgba(0,0,0,.090); }
+html:not(.dark) .bg-white\/90 { background-color: rgba(9,9,11,.08); }
+
+/* hover:bg-white opacity variants */
+html:not(.dark) .hover\:bg-white\/04:hover { background-color: rgba(0,0,0,.04); }
+html:not(.dark) .hover\:bg-white\/05:hover { background-color: rgba(0,0,0,.05); }
+html:not(.dark) .hover\:bg-white\/07:hover { background-color: rgba(0,0,0,.06); }
+html:not(.dark) .hover\:bg-white\/08:hover { background-color: rgba(0,0,0,.065); }
+html:not(.dark) .hover\:bg-white\/10:hover { background-color: rgba(0,0,0,.08); }
+html:not(.dark) .hover\:bg-white\/12:hover { background-color: rgba(0,0,0,.09); }
+html:not(.dark) .hover\:bg-white\/90:hover {
+  background-color: rgba(9,9,11,.88);
+  color: #f5f5f7;
+}
+
+/* border-white opacity variants */
+html:not(.dark) .border-white\/04 { border-color: rgba(0,0,0,.04); }
+html:not(.dark) .border-white\/06 { border-color: rgba(0,0,0,.06); }
+html:not(.dark) .border-white\/08 { border-color: rgba(0,0,0,.08); }
+html:not(.dark) .border-white\/10 { border-color: rgba(0,0,0,.10); }
+html:not(.dark) .border-white\/12 { border-color: rgba(0,0,0,.10); }
+html:not(.dark) .border-white\/14 { border-color: rgba(0,0,0,.12); }
+html:not(.dark) .border-white\/16 { border-color: rgba(0,0,0,.13); }
+html:not(.dark) .border-white\/20 { border-color: rgba(0,0,0,.16); }
+html:not(.dark) .border-white\/30 { border-color: rgba(0,0,0,.20); }
+html:not(.dark) .border-white\/40 { border-color: rgba(0,0,0,.28); }
+
+/* focus:border-white */
+html:not(.dark) .focus\:border-white\/40:focus { border-color: rgba(0,0,0,.30); }
+
+/* hover:border-white */
+html:not(.dark) .hover\:border-white\/16:hover { border-color: rgba(0,0,0,.13); }
+
+/* placeholder */
+html:not(.dark) .placeholder-white\/25::placeholder { color: rgba(9,9,11,.35); }
+html:not(.dark) .placeholder-white\/30::placeholder { color: rgba(9,9,11,.40); }
+
+/* border-t-white (loading spinner top stripe) */
+html:not(.dark) .border-t-white { border-top-color: #09090b; }
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-12px); }
+}
+@keyframes sparkle-in {
+  0%   { transform: scale(0) rotate(0deg);     opacity: 0; }
+  50%  { transform: scale(1.2) rotate(180deg); opacity: 1; }
+  100% { transform: scale(0) rotate(360deg);   opacity: 0; }
+}
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes blink {
+  0%, 49%   { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+@keyframes scroll-progress {
+  from { width: 0%; }
+  to   { width: 100%; }
+}
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+@keyframes pulse-ring {
+  0%   { transform: scale(0.8); opacity: 1; }
+  100% { transform: scale(2);   opacity: 0; }
+}
