@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Menu, X, Command } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import ThemeToggle from '@/components/shared/ThemeToggle'
@@ -16,6 +16,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const location = useLocation()
+  const navigate = useNavigate()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40)
@@ -25,13 +26,12 @@ export default function Navbar() {
 
   const scrollTo = (href) => {
     setMobileOpen(false)
-    if (href.startsWith('/#')) {
-      const id = href.replace('/#', '#')
-      if (location.pathname !== '/') {
-        window.location.href = href
-      } else {
-        document.querySelector(id)?.scrollIntoView({ behavior: 'smooth' })
-      }
+    if (!href.startsWith('/#')) return
+    const id = href.slice(1) // '/#about' → '#about'
+    if (location.pathname !== '/') {
+      navigate('/', { state: { scrollTo: id } })
+    } else {
+      document.querySelector(id)?.scrollIntoView({ behavior: 'smooth' })
     }
   }
 
