@@ -224,17 +224,21 @@ The separation of concerns made BotForge robust to deploy and easy to reason abo
 ]
 
 async function seed() {
+  if (!process.env.ADMIN_EMAIL || !process.env.ADMIN_PASSWORD) {
+    throw new Error('ADMIN_EMAIL and ADMIN_PASSWORD env vars must be set before seeding.')
+  }
+
   await mongoose.connect(process.env.MONGODB_URI)
   console.log('Connected to MongoDB')
 
   // Seed admin if not exists
-  const existing = await Admin.findOne({ email: process.env.ADMIN_EMAIL || 'admin@danishraza.dev' })
+  const existing = await Admin.findOne({ email: process.env.ADMIN_EMAIL })
   if (!existing) {
     await Admin.create({
-      email:    process.env.ADMIN_EMAIL    || 'admin@danishraza.dev',
-      password: process.env.ADMIN_PASSWORD || 'changeme123',
+      email:    process.env.ADMIN_EMAIL,
+      password: process.env.ADMIN_PASSWORD,
     })
-    console.log('Admin created:', process.env.ADMIN_EMAIL || 'admin@danishraza.dev')
+    console.log('Admin created:', process.env.ADMIN_EMAIL)
   }
 
   // Seed posts
