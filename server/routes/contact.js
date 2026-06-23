@@ -1,5 +1,4 @@
 import { Router } from 'express'
-import nodemailer from 'nodemailer'
 import Contact from '../models/Contact.js'
 
 const router = Router()
@@ -20,24 +19,34 @@ router.post('/', async (req, res) => {
   // Respond immediately — email is best-effort and must not block the user
   res.status(201).json({ message: 'Message received' })
 
-  if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
+  if (process.env.BREVO_API_KEY) {
+    fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'api-key': process.env.BREVO_API_KEY,
+      },
+      body: JSON.stringify({
+        sender: { name: 'Portfolio Contact', email: process.env.EMAIL_FROM },
+        to:     [{ email: process.env.EMAIL_TO }],
+        subject: `[Portfolio] ${subject}`,
+        htmlContent: `
+          <div style="font-family:sans-serif;max-width:520px;padding:24px;background:#111;color:#eee;border-radius:12px">
+            <h3 style="margin:0 0 12px;color:#fff">${subject}</h3>
+            <p style="margin:0 0 4px"><strong>From:</strong> ${name} &lt;${email}&gt;</p>
+            <hr style="border-color:#333;margin:16px 0"/>
+            <p style="white-space:pre-wrap;color:#ccc">${message}</p>
+          </div>
+        `,
+      }),
     })
-    transporter.sendMail({
-      from:    `"Portfolio Contact" <${process.env.EMAIL_USER}>`,
-      to:      process.env.EMAIL_TO || process.env.EMAIL_USER,
-      subject: `[Portfolio] ${subject}`,
-      html: `
-        <div style="font-family:sans-serif;max-width:520px;padding:24px;background:#111;color:#eee;border-radius:12px">
-          <h3 style="margin:0 0 12px;color:#fff">${subject}</h3>
-          <p style="margin:0 0 4px"><strong>From:</strong> ${name} &lt;${email}&gt;</p>
-          <hr style="border-color:#333;margin:16px 0"/>
-          <p style="white-space:pre-wrap;color:#ccc">${message}</p>
-        </div>
-      `,
-    }).catch((err) => console.error('[contact] Email failed:', err.message))
+      .then(async (r) => {
+        if (!r.ok) {
+          const body = await r.text()
+          console.error('[contact] Brevo error:', r.status, body)
+        }
+      })
+      .catch((err) => console.error('[contact] Email failed:', err.message))
   }
 })
 

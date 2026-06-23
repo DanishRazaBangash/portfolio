@@ -19,6 +19,9 @@ const app  = express()
 const PORT = process.env.PORT || 5000
 const isProd = process.env.NODE_ENV === 'production'
 
+// Render (and most cloud hosts) sit behind a reverse proxy
+app.set('trust proxy', 1)
+
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
