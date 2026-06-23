@@ -26,7 +26,7 @@ app.use(helmet({
       scriptSrc:   ["'self'", "'unsafe-inline'"],
       styleSrc:    ["'self'", "'unsafe-inline'"],
       imgSrc:      ["'self'", 'data:', 'blob:', 'https:'],
-      connectSrc:  ["'self'"],
+      connectSrc:  ["'self'", 'https://api.github.com', 'https://github-contributions-api.jogruber.de'],
       fontSrc:     ["'self'", 'data:'],
       objectSrc:   ["'none'"],
       upgradeInsecureRequests: isProd ? [] : null,
@@ -57,7 +57,7 @@ app.get('/api/health', (_, res) => res.json({ ok: true }))
 if (isProd) {
   const distPath = join(__dirname, '../client/dist')
   app.use(express.static(distPath))
-  app.get('*', (req, res) => res.sendFile(join(distPath, 'index.html')))
+  app.get('*', (_, res) => res.sendFile(join(distPath, 'index.html')))
 }
 
 connectDB()
