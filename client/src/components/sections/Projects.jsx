@@ -10,7 +10,7 @@ const projects = [
     description:
       'A production-grade platform enabling businesses to create, train, and deploy AI chatbots without writing code. Features embeddable widgets for any website and a comprehensive analytics dashboard.',
     longDescription:
-      "BotForge's core is a four-tier parallel RAG pipeline built with Promise.all — combining semantic cosine similarity search (Gemini gemini-embedding-2, 3072-dimensional vectors) at 1.8× weight, MongoDB full-text search at 1.5×, regex keyword matching at 1.0×, and fuzzy per-word matching at 0.6×. Results are merged via weighted scoring, achieving ~90% retrieval accuracy at ~780ms latency.\n\nBuilt collaboratively with Muhammad Hazik under supervision of Dr. Sara Shehzad. Deployed on Render (three separate services: backend, widget, frontend) with MongoDB Atlas. Includes multi-tier subscription model (Free, Pro, Business) and conversation history tracking.",
+      "BotForge's core is a four-tier parallel RAG pipeline built with Promise.all — combining semantic cosine similarity search (Gemini gemini-embedding-2, 3072-dimensional vectors) at 1.8× weight, MongoDB full-text search at 1.5×, regex keyword matching at 1.0×, and fuzzy per-word matching at 0.6×. Results are merged via weighted scoring, achieving ~90% retrieval accuracy at ~780ms latency.\n\nBuilt under the supervision of Dr. Sara Shehzad. Deployed on Render (three separate services: backend, widget, frontend) with MongoDB Atlas. Includes multi-tier subscription model (Free, Pro, Business) and conversation history tracking.",
     tech: ['React.js', 'Node.js', 'Express.js', 'MongoDB', 'Gemini API', 'Docker', 'Render'],
     github: 'https://github.com/danishrazabangash',
     live: null,
