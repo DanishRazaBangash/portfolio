@@ -1,6 +1,6 @@
 import { Mail } from 'lucide-react'
 import { GitHubIcon, LinkedInIcon } from '@/components/shared/SocialIcons'
-import { Link } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 const socials = [
   { icon: GitHubIcon,   label: 'GitHub',   href: 'https://github.com/danishrazabangash' },
@@ -10,6 +10,16 @@ const socials = [
 
 export default function Footer() {
   const year = new Date().getFullYear()
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  const scrollTo = (id) => {
+    if (location.pathname !== '/') {
+      navigate('/', { state: { scrollTo: id } })
+    } else {
+      document.querySelector(id)?.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
 
   return (
     <footer className="border-t border-white/06 py-10 mt-24">
@@ -20,10 +30,10 @@ export default function Footer() {
         </div>
 
         <nav className="flex items-center gap-4 text-xs text-white/40">
-          <button onClick={() => document.querySelector('#about')?.scrollIntoView({ behavior: 'smooth' })} className="hover:text-white transition-colors">About</button>
-          <button onClick={() => document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' })} className="hover:text-white transition-colors">Projects</button>
-          <Link to="/blog" className="hover:text-white transition-colors">Blog</Link>
-          <button onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })} className="hover:text-white transition-colors">Contact</button>
+          <button onClick={() => scrollTo('#about')}    className="hover:text-white transition-colors">About</button>
+          <button onClick={() => scrollTo('#projects')} className="hover:text-white transition-colors">Projects</button>
+          <Link to="/blog"                              className="hover:text-white transition-colors">Blog</Link>
+          <button onClick={() => scrollTo('#contact')}  className="hover:text-white transition-colors">Contact</button>
         </nav>
 
         <div className="flex items-center gap-3">
