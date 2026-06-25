@@ -23,10 +23,16 @@ router.get('/', async (req, res) => {
   }
 })
 
-/* public: single post + approved comments */
+/* public: single post + approved comments — increments view count for non-admin visitors */
 router.get('/:slug', async (req, res) => {
   try {
-    const post = await Post.findOne({ slug: req.params.slug, status: 'published' })
+    const isAdmin = req.headers.authorization?.startsWith('Bearer ')
+    const filter  = { slug: req.params.slug, status: 'published' }
+
+    const post = isAdmin
+      ? await Post.findOne(filter)
+      : await Post.findOneAndUpdate(filter, { $inc: { views: 1 } }, { new: true })
+
     if (!post) return res.status(404).json({ message: 'Not found' })
     const comments = await Comment.find({ postSlug: req.params.slug, approved: true }).sort({ createdAt: -1 })
     res.json({ post, comments })

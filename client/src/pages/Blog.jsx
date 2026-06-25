@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Search, Tag, Clock, ArrowRight } from 'lucide-react'
+import { Search, Tag, Clock, Eye, ArrowRight } from 'lucide-react'
 import { formatDate } from '@/lib/utils'
 import api from '@/lib/api'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import SEOMeta from '@/components/shared/SEOMeta'
+
+const fmtViews = (n) => n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n)
 
 function PostCard({ post, delay }) {
   return (
@@ -45,6 +47,11 @@ function PostCard({ post, delay }) {
               {post.readingTime && (
                 <span className="flex items-center gap-1">
                   <Clock size={11} /> {post.readingTime}
+                </span>
+              )}
+              {post.views > 0 && (
+                <span className="flex items-center gap-1">
+                  <Eye size={11} /> {fmtViews(post.views)}
                 </span>
               )}
             </div>

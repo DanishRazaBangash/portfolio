@@ -11,6 +11,7 @@ const postSchema = new mongoose.Schema(
     status:      { type: String, enum: ['draft', 'published'], default: 'draft' },
     readingTime: { type: String },
     publishedAt: { type: Date },
+    views:       { type: Number, default: 0 },
   },
   { timestamps: true }
 )

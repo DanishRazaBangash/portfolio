@@ -5,7 +5,7 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
-import { Clock, ArrowLeft, Share2 } from 'lucide-react'
+import { Clock, Eye, ArrowLeft, Share2 } from 'lucide-react'
 import { formatDate } from '@/lib/utils'
 import api from '@/lib/api'
 import Navbar from '@/components/layout/Navbar'
@@ -134,6 +134,7 @@ export default function BlogPost() {
             <div className="flex items-center gap-4 text-xs text-white/35 mb-10 pb-6 border-b border-white/08">
               <span>{formatDate(post.publishedAt)}</span>
               {post.readingTime && <span className="flex items-center gap-1"><Clock size={11} /> {post.readingTime}</span>}
+              {post.views > 0 && <span className="flex items-center gap-1"><Eye size={11} /> {post.views >= 1000 ? `${(post.views / 1000).toFixed(1)}k` : post.views} views</span>}
             </div>
 
             {/* Body */}
