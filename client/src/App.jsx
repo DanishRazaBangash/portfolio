@@ -12,6 +12,7 @@ import Blog from '@/pages/Blog'
 import BlogPost from '@/pages/BlogPost'
 import AdminLogin from '@/pages/admin/Login'
 import AdminDashboard from '@/pages/admin/Dashboard'
+import NotFound from '@/pages/NotFound'
 
 function AppInner() {
   const { theme } = useTheme()
@@ -53,7 +54,7 @@ function AppInner() {
         <Route path="/admin/login"     element={<AdminLogin />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin"           element={<Navigate to="/admin/login" replace />} />
-        <Route path="*"                element={<Navigate to="/" replace />} />
+        <Route path="*"                element={<NotFound />} />
       </Routes>
     </>
   )
