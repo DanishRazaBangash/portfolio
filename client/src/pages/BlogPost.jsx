@@ -10,6 +10,7 @@ import { formatDate } from '@/lib/utils'
 import api from '@/lib/api'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
+import SEOMeta from '@/components/shared/SEOMeta'
 import toast from 'react-hot-toast'
 
 function CommentForm({ slug }) {
@@ -103,6 +104,13 @@ export default function BlogPost() {
 
   return (
     <>
+      <SEOMeta
+        title={post.title}
+        description={post.excerpt}
+        image={post.coverImage || undefined}
+        path={`/blog/${post.slug}`}
+        type="article"
+      />
       <Navbar />
       <main className="min-h-screen pt-28 pb-20 px-6">
         <div className="max-w-2xl mx-auto">

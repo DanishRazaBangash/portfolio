@@ -9,6 +9,7 @@ import GitHubStats from '@/components/sections/GitHubStats'
 import Contact from '@/components/sections/Contact'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
+import SEOMeta from '@/components/shared/SEOMeta'
 
 export default function Home() {
   const location = useLocation()
@@ -24,6 +25,7 @@ export default function Home() {
 
   return (
     <>
+      <SEOMeta path="/" />
       <Navbar />
       <main>
         <Hero />

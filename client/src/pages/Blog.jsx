@@ -6,6 +6,7 @@ import { formatDate } from '@/lib/utils'
 import api from '@/lib/api'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
+import SEOMeta from '@/components/shared/SEOMeta'
 
 function PostCard({ post, delay }) {
   return (
@@ -78,6 +79,11 @@ export default function Blog() {
 
   return (
     <>
+      <SEOMeta
+        title="Blog"
+        description="Thoughts on MERN development, AI integration, RAG pipelines, and building things at scale — by Danish Raza."
+        path="/blog"
+      />
       <Navbar />
       <main className="min-h-screen pt-28 pb-20 px-6">
         <div className="max-w-4xl mx-auto">
