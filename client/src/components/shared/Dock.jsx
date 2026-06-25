@@ -116,13 +116,10 @@ export default function Dock() {
     <div className="fixed bottom-6 inset-x-0 flex justify-center z-[90] pointer-events-none">
 
       {/* ── Desktop macOS dock ── */}
-      <motion.div
-        initial={{ opacity: 0, y: 28 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.55, delay: 0.9, ease: [0.22, 1, 0.36, 1] }}
+      <div
         onMouseMove={(e) => mouseX.set(e.pageX)}
         onMouseLeave={() => mouseX.set(Infinity)}
-        className="hidden md:flex items-end gap-2 px-4 py-3 dock-panel rounded-2xl pointer-events-auto"
+        className="hidden md:flex items-end gap-2 px-4 py-3 dock-panel dock-entrance rounded-2xl pointer-events-auto"
       >
         <DockItem mouseX={mouseX} icon={<Home size={sz} />}         label="Home"     onClick={() => navigate('/')}           isActive={isHome && !activeSection} />
         <Separator />
@@ -142,7 +139,7 @@ export default function Dock() {
           label="Theme"
           onClick={toggle}
         />
-      </motion.div>
+      </div>
 
     </div>
   )
