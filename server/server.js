@@ -29,7 +29,7 @@ app.use(helmet({
       scriptSrc:   ["'self'", "'unsafe-inline'", 'https://chatbot-builder-widget.onrender.com'],
       styleSrc:    ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
       imgSrc:      ["'self'", 'data:', 'blob:', 'https:'],
-      connectSrc:  ["'self'", 'https://api.github.com', 'https://github-contributions-api.jogruber.de', 'https://chatbot-builder-widget.onrender.com'],
+      connectSrc:  ["'self'", 'https://api.github.com', 'https://github-contributions-api.jogruber.de', 'https://chatbot-builder-widget.onrender.com', 'https://chatbot-builder-api-2v3u.onrender.com'],
       fontSrc:     ["'self'", 'data:', 'https://fonts.googleapis.com', 'https://fonts.gstatic.com'],
       objectSrc:   ["'none'"],
       upgradeInsecureRequests: isProd ? [] : null,
