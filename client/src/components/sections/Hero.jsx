@@ -158,7 +158,7 @@ export default function Hero() {
     document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })
 
   return (
-    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden md:pb-24">
       <ParticleCanvas />
 
       {/* Radial gradient glow — colour set by CSS variable, theme-aware */}
@@ -171,7 +171,7 @@ export default function Hero() {
         aria-hidden
       />
 
-      <div className="relative z-10 max-w-5xl mx-auto px-6 pt-24 pb-16 text-center">
+      <div className="relative z-10 max-w-5xl mx-auto px-6 pt-24 md:pt-6 pb-16 text-center">
         {/* Badge */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -280,7 +280,7 @@ export default function Hero() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.2 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/25"
+        className="md:hidden absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/25"
       >
         <span className="text-[10px] tracking-widest uppercase">Scroll</span>
         <ArrowDown size={14} style={{ animation: 'float 2s ease-in-out infinite' }} />

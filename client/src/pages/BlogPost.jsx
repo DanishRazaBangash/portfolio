@@ -112,7 +112,7 @@ export default function BlogPost() {
         type="article"
       />
       <Navbar />
-      <main className="min-h-screen pt-28 pb-20 px-6">
+      <main className="min-h-screen pt-28 pb-20 md:pb-32 px-6">
         <div className="max-w-2xl mx-auto">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}>
             <Link to="/blog" className="inline-flex items-center gap-2 text-xs text-white/40 hover:text-white transition-colors mb-8">

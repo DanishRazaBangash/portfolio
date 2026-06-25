@@ -20,7 +20,7 @@ export default function NotFound() {
       <SEOMeta title="404 — Page Not Found" description="This page doesn't exist. Let me help you find your way back." />
       <Navbar />
 
-      <main className="min-h-screen flex flex-col items-center justify-center px-6 relative overflow-hidden">
+      <main className="min-h-screen flex flex-col items-center justify-center px-6 pb-20 md:pb-32 relative overflow-hidden">
 
         {/* Radial glow — same pattern as hero */}
         <div

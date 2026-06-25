@@ -7,6 +7,7 @@ import CustomCursor from '@/components/shared/CustomCursor'
 import ScrollProgress from '@/components/shared/ScrollProgress'
 import CommandPalette from '@/components/shared/CommandPalette'
 import StarField from '@/components/shared/StarField'
+import Dock from '@/components/shared/Dock'
 import Home from '@/pages/Home'
 import Blog from '@/pages/Blog'
 import BlogPost from '@/pages/BlogPost'
@@ -30,6 +31,7 @@ function AppInner() {
       <CustomCursor />
       <ScrollProgress />
       <CommandPalette />
+      <Dock />
       <Toaster
         position="bottom-right"
         toastOptions={{
