@@ -11,6 +11,7 @@ import authRoutes    from './routes/auth.js'
 import postRoutes    from './routes/posts.js'
 import commentRoutes from './routes/comments.js'
 import contactRoutes from './routes/contact.js'
+import sitemapHandler from './routes/sitemap.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname  = dirname(__filename)
@@ -56,6 +57,7 @@ app.use('/api/comments', commentRoutes)
 app.use('/api/contact',  contactLimiter, contactRoutes)
 
 app.get('/api/health', (_, res) => res.json({ ok: true }))
+app.get('/sitemap.xml', sitemapHandler)
 
 if (isProd) {
   const distPath = join(__dirname, '../client/dist')
