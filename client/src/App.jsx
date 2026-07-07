@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { useTheme } from '@/store/useTheme'
@@ -8,12 +8,16 @@ import ScrollProgress from '@/components/shared/ScrollProgress'
 import CommandPalette from '@/components/shared/CommandPalette'
 import StarField from '@/components/shared/StarField'
 import Dock from '@/components/shared/Dock'
-import Home from '@/pages/Home'
-import Blog from '@/pages/Blog'
-import BlogPost from '@/pages/BlogPost'
-import AdminLogin from '@/pages/admin/Login'
-import AdminDashboard from '@/pages/admin/Dashboard'
-import NotFound from '@/pages/NotFound'
+
+// Route-level code splitting — each page becomes its own JS chunk.
+// BlogPost is the highest priority: it pulls react-markdown +
+// react-syntax-highlighter (~300 KB) that home-page visitors never need.
+const Home           = lazy(() => import('@/pages/Home'))
+const Blog           = lazy(() => import('@/pages/Blog'))
+const BlogPost       = lazy(() => import('@/pages/BlogPost'))
+const AdminLogin     = lazy(() => import('@/pages/admin/Login'))
+const AdminDashboard = lazy(() => import('@/pages/admin/Dashboard'))
+const NotFound       = lazy(() => import('@/pages/NotFound'))
 
 function AppInner() {
   const { theme } = useTheme()
@@ -49,15 +53,17 @@ function AppInner() {
           },
         }}
       />
-      <Routes>
-        <Route path="/"                element={<Home />} />
-        <Route path="/blog"            element={<Blog />} />
-        <Route path="/blog/:slug"      element={<BlogPost />} />
-        <Route path="/admin/login"     element={<AdminLogin />} />
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
-        <Route path="/admin"           element={<Navigate to="/admin/login" replace />} />
-        <Route path="*"                element={<NotFound />} />
-      </Routes>
+      <Suspense fallback={<div className="min-h-screen" />}>
+        <Routes>
+          <Route path="/"                element={<Home />} />
+          <Route path="/blog"            element={<Blog />} />
+          <Route path="/blog/:slug"      element={<BlogPost />} />
+          <Route path="/admin/login"     element={<AdminLogin />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin"           element={<Navigate to="/admin/login" replace />} />
+          <Route path="*"                element={<NotFound />} />
+        </Routes>
+      </Suspense>
     </>
   )
 }
