@@ -287,23 +287,8 @@ html:not(.dark) .border-t-white { border-top-color: #09090b; }
   100% { transform: scale(2);   opacity: 0; }
 }
 
-/* ── macOS dock — kept outside @layer so Lightning CSS never
-   scope-hoists the keyframe or strips backdrop-filter in prod ── */
-.dock-panel {
-  background: rgba(235, 235, 242, 0.60);
-  border: 1px solid rgba(255, 255, 255, 0.65);
-  backdrop-filter: saturate(180%) blur(40px);
-  -webkit-backdrop-filter: saturate(180%) blur(40px);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04),
-              inset 0 1px 0 rgba(255,255,255,0.85);
-}
-.dark .dock-panel {
-  background: rgba(12, 12, 16, 0.65);
-  border-color: rgba(255, 255, 255, 0.10);
-  box-shadow: 0 8px 40px rgba(0,0,0,0.45), 0 2px 12px rgba(0,0,0,0.28),
-              inset 0 1px 0 rgba(255,255,255,0.07);
-}
-
+/* ── macOS dock — panel styles live in Dock.jsx inline styles to
+   bypass Lightning CSS and avoid compositing/backdrop-filter bugs ── */
 .dock-icon {
   background: rgba(255, 255, 255, 0.48);
   border: 1px solid rgba(255, 255, 255, 0.70);
@@ -311,18 +296,66 @@ html:not(.dark) .border-t-white { border-top-color: #09090b; }
 }
 .dock-icon:hover { background: rgba(255, 255, 255, 0.65); }
 .dark .dock-icon {
-  background: rgba(255, 255, 255, 0.07);
-  border-color: rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.18);
 }
-.dark .dock-icon:hover { background: rgba(255, 255, 255, 0.13); }
+.dark .dock-icon:hover { background: rgba(255, 255, 255, 0.20); }
 
 .dock-separator { background: rgba(0, 0, 0, 0.10); }
 .dark .dock-separator { background: rgba(255, 255, 255, 0.11); }
 
-@keyframes dock-in {
-  from { opacity: 0; transform: translateY(28px); }
-  to   { opacity: 1; transform: none; }
+/* ── animated flowing border ── */
+@property --dock-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
 }
-.dock-entrance {
-  animation: dock-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.9s both;
+.dock-border {
+  position: relative;
 }
+.dock-border::after {
+  content: '';
+  position: absolute;
+  inset: -1.5px;
+  border-radius: inherit;
+  padding: 1.5px;
+  /* light mode: dark gray-indigo shimmer */
+  background: conic-gradient(
+    from var(--dock-angle),
+    transparent           0%,
+    transparent           32%,
+    rgba(70,75,110,0.05)  39%,
+    rgba(70,75,110,0.50)  47%,
+    rgba(50,55,90,0.82)   50%,
+    rgba(70,75,110,0.50)  53%,
+    rgba(70,75,110,0.05)  61%,
+    transparent           68%,
+    transparent           100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  animation: dock-border-spin 4s linear infinite;
+}
+.dark .dock-border::after {
+  /* dark mode: white shimmer */
+  background: conic-gradient(
+    from var(--dock-angle),
+    transparent            0%,
+    transparent            32%,
+    rgba(255,255,255,0.08) 39%,
+    rgba(255,255,255,0.75) 47%,
+    rgba(255,255,255,1.00) 50%,
+    rgba(255,255,255,0.75) 53%,
+    rgba(255,255,255,0.08) 61%,
+    transparent            68%,
+    transparent            100%
+  );
+}
+@keyframes dock-border-spin {
+  to { --dock-angle: 360deg; }
+}
+

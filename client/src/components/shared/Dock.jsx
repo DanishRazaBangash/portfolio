@@ -25,7 +25,7 @@ function DockItem({ mouseX, icon, label, onClick, isActive = false }) {
         style={{ width: size, height: size }}
         onClick={onClick}
         aria-label={label}
-        className="relative dock-icon flex items-center justify-center shrink-0 rounded-[14px] text-white/55 hover:text-white focus:outline-none"
+        className="relative dock-icon flex items-center justify-center shrink-0 rounded-[14px] text-white/90 hover:text-white focus:outline-none"
       >
         {icon}
 
@@ -42,7 +42,7 @@ function DockItem({ mouseX, icon, label, onClick, isActive = false }) {
       {/* Always-visible label */}
       <span
         className={`text-[9px] font-medium leading-none whitespace-nowrap select-none pointer-events-none transition-colors ${
-          isActive ? 'text-white' : 'text-white/40'
+          isActive ? 'text-white' : 'text-white/70'
         }`}
       >
         {label}
@@ -78,19 +78,30 @@ export default function Dock() {
   useEffect(() => {
     if (location.pathname !== '/') { setActiveSection(null); return }
 
-    const ids = ['#about', '#skills', '#projects', '#contact']
-    const observers = ids.map((id) => {
-      const el = document.querySelector(id)
-      if (!el) return null
-      const obs = new IntersectionObserver(
-        ([entry]) => { if (entry.isIntersecting) setActiveSection(id) },
-        { rootMargin: '-35% 0px -55% 0px', threshold: 0 },
-      )
-      obs.observe(el)
-      return obs
-    })
+    window.scrollTo(0, 0)
+    setActiveSection(null)
 
-    return () => observers.forEach((obs) => obs?.disconnect())
+    // Defer observer setup to the next macrotask so the scroll has been
+    // committed to layout before the initial intersection check fires
+    let observers = []
+    const timerId = setTimeout(() => {
+      const ids = ['#about', '#skills', '#projects', '#contact']
+      observers = ids.flatMap((id) => {
+        const el = document.querySelector(id)
+        if (!el) return []
+        const obs = new IntersectionObserver(
+          ([entry]) => { if (entry.isIntersecting) setActiveSection(id) },
+          { rootMargin: '-35% 0px -55% 0px', threshold: 0 },
+        )
+        obs.observe(el)
+        return [obs]
+      })
+    }, 0)
+
+    return () => {
+      clearTimeout(timerId)
+      observers.forEach((obs) => obs.disconnect())
+    }
   }, [location.pathname])
 
   const scrollTo = (id) => {
@@ -110,18 +121,40 @@ export default function Dock() {
 
   const isHome = location.pathname === '/'
   const isBlog = location.pathname.startsWith('/blog')
+  const isDark = theme === 'dark'
   const sz = 24
+
+  // Inline styles bypass Vite/Lightning CSS processing entirely —
+  // the only reliable way to get backdrop-filter working on a fixed
+  // element in production Chrome without compositing layer issues.
+  const panelStyle = {
+    backdropFilter: 'saturate(180%) blur(40px)',
+    WebkitBackdropFilter: 'saturate(180%) blur(40px)',
+    ...(isDark ? {
+      background: 'rgba(255, 255, 255, 0.10)',
+      boxShadow: '0 8px 40px rgba(0,0,0,0.30), 0 2px 12px rgba(0,0,0,0.20), inset 0 1px 0 rgba(255,255,255,0.18)',
+    } : {
+      background: 'rgba(190, 193, 215, 0.82)',
+      boxShadow: '0 8px 32px rgba(0,0,0,0.14), 0 2px 8px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.90)',
+    }),
+  }
 
   return (
     <div className="fixed bottom-6 inset-x-0 flex justify-center z-[90] pointer-events-none">
 
       {/* ── Desktop macOS dock ── */}
-      <div
+      {/* motion.div animates opacity only — no transform means no GPU
+          compositing layer that would swallow the backdrop-filter */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.55, delay: 0.9 }}
         onMouseMove={(e) => mouseX.set(e.pageX)}
         onMouseLeave={() => mouseX.set(Infinity)}
-        className="hidden md:flex items-end gap-2 px-4 py-3 dock-panel dock-entrance rounded-2xl pointer-events-auto"
+        className="hidden md:flex items-end gap-2 px-4 py-3 rounded-2xl pointer-events-auto dock-border"
+        style={panelStyle}
       >
-        <DockItem mouseX={mouseX} icon={<Home size={sz} />}         label="Home"     onClick={() => navigate('/')}           isActive={isHome && !activeSection} />
+        <DockItem mouseX={mouseX} icon={<Home size={sz} />}         label="Home"     onClick={() => { if (isHome) { setActiveSection(null); window.scrollTo({ top: 0, behavior: 'smooth' }) } else { navigate('/') } }} isActive={isHome && !activeSection} />
         <Separator />
         <DockItem mouseX={mouseX} icon={<User size={sz} />}         label="About"    onClick={() => scrollTo('#about')}    isActive={isHome && activeSection === '#about'} />
         <DockItem mouseX={mouseX} icon={<Zap size={sz} />}          label="Skills"   onClick={() => scrollTo('#skills')}   isActive={isHome && activeSection === '#skills'} />
@@ -139,7 +172,7 @@ export default function Dock() {
           label="Theme"
           onClick={toggle}
         />
-      </div>
+      </motion.div>
 
     </div>
   )

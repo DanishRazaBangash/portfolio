@@ -13,8 +13,8 @@ const projects = [
       "BotForge's core is a four-tier parallel RAG pipeline built with Promise.all — combining semantic cosine similarity search (Gemini gemini-embedding-2, 3072-dimensional vectors) at 1.8× weight, MongoDB full-text search at 1.5×, regex keyword matching at 1.0×, and fuzzy per-word matching at 0.6×. Results are merged via weighted scoring, achieving ~90% retrieval accuracy at ~780ms latency.\n\nBuilt under the supervision of Dr. Sara Shehzad. Deployed on Render (three separate services: backend, widget, frontend) with MongoDB Atlas. Includes multi-tier subscription model (Free, Pro, Business) and conversation history tracking.",
     tech: ['React.js', 'Node.js', 'Express.js', 'MongoDB', 'Gemini API', 'Docker', 'Render'],
     github: 'https://github.com/danishrazabangash',
-    live: null,
-    badge: 'Flagship',
+    live: 'https://chatbot-builder-api-2v3u.onrender.com/',
+    badge: null,
   },
   {
     title: 'Real-Time Chat App',
@@ -72,6 +72,17 @@ function ProjectCard({ project, onClick }) {
                 {project.badge}
               </span>
             )}
+            {project.live && (
+              <a
+                href={project.live}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="flex items-center gap-1 text-[10px] px-2 py-0.5 bg-white/10 text-white/70 rounded-full border border-white/12 hover:bg-white/20 hover:text-white transition-colors"
+              >
+                <ExternalLink size={9} /> Visit Site
+              </a>
+            )}
           </div>
           <p className="text-white/40 text-xs">{project.subtitle}</p>
         </div>
@@ -125,6 +136,16 @@ function ProjectModal({ project, onClose }) {
                       <span className="text-[10px] px-2 py-0.5 bg-white/10 text-white/70 rounded-full border border-white/12">
                         {project.badge}
                       </span>
+                    )}
+                    {project.live && (
+                      <a
+                        href={project.live}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1 text-[10px] px-2 py-0.5 bg-white/10 text-white/70 rounded-full border border-white/12 hover:bg-white/20 hover:text-white transition-colors"
+                      >
+                        <ExternalLink size={9} /> Visit Site
+                      </a>
                     )}
                   </div>
                   <p className="text-white/40 text-sm">{project.subtitle}</p>
