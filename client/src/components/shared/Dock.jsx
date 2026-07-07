@@ -140,7 +140,7 @@ export default function Dock() {
   }
 
   return (
-    <div className="fixed bottom-6 inset-x-0 flex justify-center z-[90] pointer-events-none">
+    <div className="fixed bottom-6 inset-x-0 flex justify-center z-90 pointer-events-none">
 
       {/* ── Desktop macOS dock ── */}
       {/* motion.div animates opacity only — no transform means no GPU

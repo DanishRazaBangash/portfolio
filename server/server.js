@@ -11,7 +11,7 @@ import authRoutes    from './routes/auth.js'
 import postRoutes    from './routes/posts.js'
 import commentRoutes from './routes/comments.js'
 import contactRoutes from './routes/contact.js'
-import sitemapHandler from './routes/sitemap.js'
+import Post from './models/Post.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname  = dirname(__filename)
@@ -57,7 +57,27 @@ app.use('/api/comments', commentRoutes)
 app.use('/api/contact',  contactLimiter, contactRoutes)
 
 app.get('/api/health', (_, res) => res.json({ ok: true }))
-app.get('/sitemap.xml', sitemapHandler)
+
+app.get('/sitemap.xml', async (req, res) => {
+  const DOMAIN = 'https://danishraza.dev'
+  try {
+    const posts = await Post.find({ status: 'published' }).select('slug updatedAt').lean()
+    const staticEntries = [
+      `  <url><loc>${DOMAIN}/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>`,
+      `  <url><loc>${DOMAIN}/blog</loc><changefreq>daily</changefreq><priority>0.9</priority></url>`,
+    ]
+    const postEntries = posts.map((p) =>
+      `  <url><loc>${DOMAIN}/blog/${p.slug}</loc><lastmod>${new Date(p.updatedAt).toISOString().split('T')[0]}</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>`,
+    )
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${[...staticEntries, ...postEntries].join('\n')}\n</urlset>`
+    res.setHeader('Content-Type', 'application/xml')
+    res.setHeader('Cache-Control', 'public, max-age=3600')
+    res.send(xml)
+  } catch (err) {
+    console.error('Sitemap error:', err)
+    res.status(500).send('Error generating sitemap')
+  }
+})
 
 if (isProd) {
   const distPath = join(__dirname, '../client/dist')
