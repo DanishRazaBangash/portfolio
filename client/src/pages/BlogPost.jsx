@@ -110,6 +110,9 @@ export default function BlogPost() {
         image={post.coverImage || undefined}
         path={`/blog/${post.slug}`}
         type="article"
+        publishedAt={post.publishedAt}
+        updatedAt={post.updatedAt}
+        tags={post.tags || []}
       />
       <Navbar />
       <main className="min-h-screen pt-28 pb-20 md:pb-32 px-6">

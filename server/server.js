@@ -62,9 +62,10 @@ app.get('/sitemap.xml', async (req, res) => {
   const DOMAIN = 'https://danishraza.dev'
   try {
     const posts = await Post.find({ status: 'published' }).select('slug updatedAt').lean()
+    const today = new Date().toISOString().split('T')[0]
     const staticEntries = [
-      `  <url><loc>${DOMAIN}/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>`,
-      `  <url><loc>${DOMAIN}/blog</loc><changefreq>daily</changefreq><priority>0.9</priority></url>`,
+      `  <url><loc>${DOMAIN}/</loc><lastmod>${today}</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>`,
+      `  <url><loc>${DOMAIN}/blog</loc><lastmod>${today}</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>`,
     ]
     const postEntries = posts.map((p) =>
       `  <url><loc>${DOMAIN}/blog/${p.slug}</loc><lastmod>${new Date(p.updatedAt).toISOString().split('T')[0]}</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>`,

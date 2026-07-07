@@ -17,7 +17,7 @@ export default function NotFound() {
 
   return (
     <>
-      <SEOMeta title="404 — Page Not Found" description="This page doesn't exist. Let me help you find your way back." />
+      <SEOMeta title="404 — Page Not Found" description="This page doesn't exist. Let me help you find your way back." noindex />
       <Navbar />
 
       <main className="min-h-screen flex flex-col items-center justify-center px-6 pb-20 md:pb-32 relative overflow-hidden">
