@@ -2,7 +2,7 @@
 
 My personal portfolio website. Built with the MERN stack and deployed on Render.
 
-**Live site:** https://portfolio-gt1z.onrender.com/
+**Live site:** https://danishraza.dev
 
 ---
 
